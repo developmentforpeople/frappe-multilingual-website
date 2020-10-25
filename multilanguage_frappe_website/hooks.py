@@ -11,6 +11,55 @@ app_color = "green"
 app_email = "developmentforpeople@gmail.com"
 app_license = "MIT"
 
+
+# App name (used to override only sites with this app installed)
+multilanguage_app_site_name = app_name
+
+# Hosts/sites where this app will be enabled
+multilanguage_app_site_hosts = ["mf.local", "test-domain-mf.com", "prod-domain-mf.com"]
+
+# Languages available for site
+translated_languages_for_website = ["en", "es"]
+
+# First one on list will be the default one
+language_default = translated_languages_for_website[0]
+
+# Home page
+home_page = "index"
+
+# Url 301 redirects
+website_redirects = [
+	# Remove duplicated pages for home:
+	{ "source": "/index", "target": "/" },
+	{ "source": "/index.html", "target": "/" },
+	# Languages: Remove main language segment. For example,
+	# if "en" is first one in "translated_languages_for_website"
+	# then route "/en/example" will be redirected 301 to "/example"
+	{ "source": r"/{0}".format(language_default), "target": "/" },
+	{ "source": r"/{0}/(.*)".format(language_default), "target": r"/\1" },
+	# Foce url language for some Frappe framework dynamic pages:
+	{ "source": "/en/login", "target": "/login?_lang=en" },
+	{ "source": "/es/login", "target": "/login?_lang=es" },
+	{ "source": "/en/contact", "target": "/contact?_lang=en" },
+	{ "source": "/es/contact", "target": "/contact?_lang=es" },
+	# Foce url language for not language specific pages:
+	{ "source": "/en/translations", "target": "/translations?_lang=en" },
+	{ "source": "/es/translations", "target": "/translations?_lang=es" },
+]
+
+# Setup some global context variables related to languages
+website_context = {
+	"languages": translated_languages_for_website,
+	"language_default": language_default,
+	"app_site_name": app_name,
+}
+
+# Calculate active language from url first segment
+update_website_context = [
+	"{0}.context_extend".format(app_name),
+]
+
+
 # Includes in <head>
 # ------------------
 
@@ -19,7 +68,7 @@ app_license = "MIT"
 # app_include_js = "/assets/multilanguage_frappe_website/js/multilanguage_frappe_website.js"
 
 # include js, css files in header of web template
-# web_include_css = "/assets/multilanguage_frappe_website/css/multilanguage_frappe_website.css"
+web_include_css = "/assets/multilanguage_frappe_website/css/multilanguage_frappe_website.css"
 # web_include_js = "/assets/multilanguage_frappe_website/js/multilanguage_frappe_website.js"
 
 # include js in page

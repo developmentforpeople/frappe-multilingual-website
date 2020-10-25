@@ -1,0 +1,7 @@
+apps/multilanguage_frappe_website/multilanguage_frappe_website/config/desktop.py,Multilanguage Frappe Website,Web multiidioma basada en el framework Frappe
+apps/multilanguage_frappe_website/multilanguage_frappe_website/www/translations.html,Translations helper,Herramienta de ayuda para traducciones
+apps/multilanguage_frappe_website/multilanguage_frappe_website/templates/includes/navbar/navbar_items.html,link:setup,Configurar
+apps/multilanguage_frappe_website/multilanguage_frappe_website/templates/includes/navbar/navbar_items.html,link:home,Web multiidioma con Frappe
+apps/multilanguage_frappe_website/multilanguage_frappe_website/templates/includes/navbar/navbar_items.html,link:other,Otra página
+apps/multilanguage_frappe_website/multilanguage_frappe_website/templates/includes/navbar/navbar_items.html,link:translations_helper,Traducciones
+apps/multilanguage_frappe_website/multilanguage_frappe_website/templates/includes/setup.html,title:how_to_setup,¿Cómo configurar una web multiidioma con Frappe?

@@ -1,0 +1,206 @@
+
+<h1>{{ _('title:how_to_setup') }}</h1>
+
+
+<h2 class="mt-5">Edit /site_app/<code>hooks.py</code></h2>
+
+<p>Add below code to your app <code>hooks.py</code> file.</p>
+
+<p>Code:</p>
+<pre><code># App name (used to override only sites with this app installed)
+multilanguage_app_site_name = app_name
+
+# Hosts/sites where this app will be enabled
+multilanguage_app_site_hosts = ["mf.local", "test-domain-mf.com", "prod-domain-mf.com"]
+
+# Languages available for site
+translated_languages_for_website = ["en", "es"]
+
+# First one on list will be the default one
+language_default = translated_languages_for_website[0]
+
+# Home page
+home_page = "index"
+
+# Url 301 redirects
+website_redirects = [
+	# Remove duplicated pages for home:
+	{ "source": "/index", "target": "/" },
+	{ "source": "/index.html", "target": "/" },
+	# Languages: Remove main language segment. For example,
+	# if "en" is first one in "translated_languages_for_website"
+	# then route "/en/example" will be redirected 301 to "/example"
+	{ "source": r"/{0}".format(language_default), "target": "/" },
+	{ "source": r"/{0}/(.*)".format(language_default), "target": r"/\1" },
+	# Foce url language for some Frappe framework dynamic pages:
+	{ "source": "/en/login", "target": "/login?_lang=en" },
+	{ "source": "/es/login", "target": "/login?_lang=es" },
+	{ "source": "/en/contact", "target": "/contact?_lang=en" },
+	{ "source": "/es/contact", "target": "/contact?_lang=es" },
+	# Foce url language for not language specific pages:
+	{ "source": "/en/translations", "target": "/translations?_lang=en" },
+	{ "source": "/es/translations", "target": "/translations?_lang=es" },
+]
+
+# Setup some global context variables related to languages
+website_context = {
+	"languages": translated_languages_for_website,
+	"language_default": language_default,
+	"app_site_name": app_name,
+}
+
+# Calculate active language from url first segment
+update_website_context = [
+	"{0}.context_extend".format(app_name),
+]</code></pre>
+
+
+
+<h2 class="mt-5">Edit /site_app/<code>__init__.py</code></h2>
+
+<p>Add below code to your app <code>__init__.py</code> file.</p>
+
+<p>Code:</p>
+<pre><code>def dfp_guess_language(lang_list=None) -> str:
+	"""Set `frappe.local.lang` from url language segment: `/xx/...`"""
+	from .hooks import multilanguage_app_site_hosts as multilanguage_site
+	from .hooks import translated_languages_for_website as languages
+	if frappe.local.site in multilanguage_site and languages:
+		# If language passed in url like: `url?_lang=xx`
+		if frappe.local.form_dict._lang and frappe.local.form_dict._lang in languages:
+			lang = frappe.local.form_dict._lang
+		else:
+			path = frappe.local.request.path
+			# Default language first in list
+			lang = languages[0]
+			# /xx || /xx/path 
+			if (len(path) == 3 or (len(path) > 3 and path[3:4] == "/")) and path[1:3] in languages:
+				lang = path[1:3]
+		# frappe.form_dict._lang = lang
+		frappe.lang = frappe.local.lang = lang
+		return lang
+	return frappe_guess_language(lang_list)
+
+import frappe.website.render
+from frappe.translate import guess_language as frappe_guess_language
+frappe.translate.guess_language = dfp_guess_language
+frappe.website.render.guess_language = dfp_guess_language
+
+
+def dfp_load_lang(lang, apps=None):
+	"""Checks `en` too"""
+	from .hooks import multilanguage_app_site_hosts as multilanguage_site
+	from .hooks import translated_languages_for_website as languages
+	if frappe.local.site in multilanguage_site and languages:
+		import os
+		from frappe.translate import get_translation_dict_from_file
+		out = frappe.cache().hget("lang_full_dict", lang, shared=True)
+		if not out:
+			out = {}
+			for app in (apps or frappe.get_all_apps(True)):
+				path = os.path.join(frappe.get_pymodule_path(app), "translations", lang + ".csv")
+				out.update(get_translation_dict_from_file(path, lang, app) or {})
+			frappe.cache().hset("lang_full_dict", lang, out, shared=True)
+		return out or {}
+	return frappe_load_lang(lang, apps)
+
+from frappe.translate import load_lang as frappe_load_lang
+frappe.translate.load_lang = dfp_load_lang
+
+
+def context_extend(context):
+	import frappe
+
+	languages = frappe.get_hooks("translated_languages_for_website")
+
+	context["lang"] = frappe.local.lang
+	context["url_lang"] = "" if frappe.local.lang == languages[0] else "/{0}".format(frappe.local.lang)
+
+	path = frappe.local.request.path
+
+	# Below context not needed for JS/CSS
+	if not path.endswith((".js", ".css")):
+
+		path_without_language = path
+		if path == "/":
+			path_without_language = ""
+		elif len(path) >= 3 and path[1:3] in languages:
+			path_without_language = path[3:]
+
+		context["languages_meta"] = []
+		for language in languages:
+			# Main language: "x-default"
+			if language == languages[0]:
+				meta_url = "{0}".format(path_without_language)
+			else:
+				meta_url = "/{0}{1}".format(language, path_without_language)
+			context["languages_meta"].append({
+				"code": language,
+				"hreflang": "x-default" if language == languages[0] else language,
+				"url": frappe.utils.get_url(meta_url),
+				"is_home": not path_without_language,
+			})
+
+		if not "context" in frappe.local.response:
+			frappe.local.response.context = {}
+
+	return context</code></pre>
+
+
+
+<h1 class="mt-5">Add lang property to html tag</h1>
+
+<p>Code:</p>
+<pre><code>&lt;html lang="&#123;&#123;lang&#125;&#125;"&gt;</code></pre>
+
+<p>HTML source:</p>
+<pre><code>&lt;html lang="{{ lang }}"&gt;</code></pre>
+
+
+
+<h1 class="mt-5">Add alternate links inside head</h1>
+
+<p>Read <a href="https://support.google.com/webmasters/answer/182192?hl=en">Managing multi-regional and multilingual sites</a>
+for more info.</p>
+
+<p>Code:</p>
+<pre><code>&#123;% for language in languages_meta -%&#125;
+&lt;link rel="alternate" href="&#123;&#123; language.url &#125;&#125;" hreflang="&#123;&#123; language.hreflang &#125;&#125;" /&gt;
+&#123;% endfor %&#125;
+</code></pre>
+
+<p>HTML source:</p>
+<pre><code>{% for language in languages_meta -%}
+&lt;link rel="alternate" href="{{ language.url }}" hreflang="{{ language.hreflang }}" /&gt;
+{% endfor %}</code></pre>
+
+
+
+<h1 class="mt-5">Add your language selector links</h1>
+
+<p>Code:</p>
+<pre><code>&lt;ul&gt;
+&#123;% for language in languages_meta %&#125;
+	&lt;li class="&#123;% if language.code == lang %&#125;selected&#123;% endif %&#125;"&gt;
+		&lt;a href="&#123;&#123; language.url &#125;&#125;"&gt;&#123;&#123; language.code|upper &#125;&#125;&lt;/a&gt;
+	&lt;ul&gt;
+&#123;% endfor %&#125;
+&lt;/ul&gt;</code></pre>
+
+<p>HTML source:</p>
+<pre><code>&lt;ul&gt;
+{%- for language in languages_meta %}
+	&lt;li class="{% if language.code == lang %}selected{% endif %}"&gt;
+		&lt;a href="{{ language.url }}">{{ language.code|upper }}&lt;/a&gt;
+	&lt;/li&gt;
+{%- endfor %}
+&lt;/ul&gt;</code></pre>
+
+<p>HTML rendered:</p>
+<ul>
+	{% for language in languages_meta %}
+	<li class="{% if language.code == lang %}selected{% endif %}">
+		<a href="{{ language.url }}">{{ language.code|upper }}</a>
+	</li>
+	{% endfor %}
+</ul>
