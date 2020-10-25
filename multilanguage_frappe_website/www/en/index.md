@@ -4,7 +4,7 @@ title: Multilanguage website example based on Frappe Framework
 
 # Multilanguage website example based on Frappe Framework
 
-I want to help all people with multilingual website needs based on wonderful [Frappe Framwork](https://frappeframework.com/).
+I want to help all people with multilingual website needs based on wonderful [Frappe Framework](https://frappeframework.com/).
 
 If you do not know [Frappe](https://frappeframework.com/) yet, please give it an opportunity, you are going to love it. And if you have a company or work with companies, you should take a look to their excelent Open Source ERP called [ERPNext](https://erpnext.com/), it is a must.
 
