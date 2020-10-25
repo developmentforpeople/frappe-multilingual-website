@@ -1,0 +1,18 @@
+include MANIFEST.in
+include requirements.txt
+include *.json
+include *.md
+include *.py
+include *.txt
+recursive-include multilanguage_frappe_website *.css
+recursive-include multilanguage_frappe_website *.csv
+recursive-include multilanguage_frappe_website *.html
+recursive-include multilanguage_frappe_website *.ico
+recursive-include multilanguage_frappe_website *.js
+recursive-include multilanguage_frappe_website *.json
+recursive-include multilanguage_frappe_website *.md
+recursive-include multilanguage_frappe_website *.png
+recursive-include multilanguage_frappe_website *.py
+recursive-include multilanguage_frappe_website *.svg
+recursive-include multilanguage_frappe_website *.txt
+recursive-exclude multilanguage_frappe_website *.pyc
