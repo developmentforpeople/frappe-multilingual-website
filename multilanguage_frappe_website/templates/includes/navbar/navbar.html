@@ -2,7 +2,7 @@
 <nav class="navbar navbar-light bg-white navbar-expand-lg sticky-top shadow-sm">
 	<div class="container">
 		<a class="navbar-brand" href="{{ "/" if lang == "en" else "/"+lang }}">
-			<span>{{ brand_html or frappe.get_hooks("brand_html") or _('link:home') }}</span>
+			<span>{{ brand_html or frappe.get_hooks("brand_html") or _('mlf:link:home') }}</span>
 		</a>
 		<button class="navbar-toggler" type="button"
 			data-toggle="collapse"
@@ -17,13 +17,13 @@
 		<div class="collapse navbar-collapse" id="navbarSupportedContent">
 			<ul class="navbar-nav justify-content-end">
 				<li class="nav-item">
-					<a class="nav-link" href="{{ url_lang }}/other">{{ _('link:other') }}</a>
+					<a class="nav-link" href="{{ url_lang }}/other">{{ _('mlf:link:other') }}</a>
 				</li>
 				<li class="nav-item">
-					<a class="nav-link" href="{{ url_lang }}/setup">{{ _('link:setup') }}</a>
+					<a class="nav-link" href="{{ url_lang }}/setup">{{ _('mlf:link:setup') }}</a>
 				</li>
 				<li class="nav-item">
-					<a class="nav-link" href="/translations?_lang={{ lang }}">{{ _('link:translations_helper') }}</a>
+					<a class="nav-link" href="/translations?_lang={{ lang }}">{{ _('mlf:link:translations_helper') }}</a>
 				</li>
 				<span class="navbar-text ml-4"> </span>
 				{% for language in languages_meta %}

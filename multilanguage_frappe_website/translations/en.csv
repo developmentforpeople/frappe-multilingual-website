@@ -1,7 +1,7 @@
 apps/multilanguage_frappe_website/multilanguage_frappe_website/config/desktop.py,Multilanguage Frappe Website,Multilanguage Frappe Website
-apps/multilanguage_frappe_website/multilanguage_frappe_website/www/translations.html,Translations helper,Translations helper
-apps/multilanguage_frappe_website/multilanguage_frappe_website/templates/includes/navbar/navbar.html,link:home,Multilingual Frappe website
-apps/multilanguage_frappe_website/multilanguage_frappe_website/templates/includes/navbar/navbar.html,link:other,Other page
-apps/multilanguage_frappe_website/multilanguage_frappe_website/templates/includes/navbar/navbar.html,link:setup,Setup
-apps/multilanguage_frappe_website/multilanguage_frappe_website/templates/includes/navbar/navbar.html,link:translations_helper,Translations helper
-apps/multilanguage_frappe_website/multilanguage_frappe_website/templates/includes/setup.html,title:how_to_setup,How to setup a Frappe multilanguage site
+apps/multilanguage_frappe_website/multilanguage_frappe_website/www/translations.html,mlf:translations_helper,Translations helper
+apps/multilanguage_frappe_website/multilanguage_frappe_website/templates/includes/navbar/navbar.html,mlf:link:home,Multilingual Frappe website
+apps/multilanguage_frappe_website/multilanguage_frappe_website/templates/includes/navbar/navbar.html,mlf:link:other,Other page
+apps/multilanguage_frappe_website/multilanguage_frappe_website/templates/includes/navbar/navbar.html,mlf:link:setup,Setup
+apps/multilanguage_frappe_website/multilanguage_frappe_website/templates/includes/navbar/navbar.html,mlf:link:translations_helper,Translations helper
+apps/multilanguage_frappe_website/multilanguage_frappe_website/templates/includes/setup.html,mlf:title:how_to_setup,How to setup a Frappe multilanguage site
