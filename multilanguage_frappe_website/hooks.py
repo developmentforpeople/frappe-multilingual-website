@@ -16,7 +16,7 @@ app_license = "MIT"
 multilanguage_app_site_name = app_name
 
 # Hosts/sites where this app will be enabled
-multilanguage_app_site_hosts = ["mf.local", "test-domain-mf.com", "prod-domain-mf.com"]
+multilanguage_app_site_hosts = ["mf.local", "frappe-multilingual-website.developmentforpeople.com"]
 
 # Languages available for site
 translated_languages_for_website = ["en", "es"]
