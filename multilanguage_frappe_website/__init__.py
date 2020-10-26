@@ -90,3 +90,12 @@ def context_extend(context):
 			frappe.local.response.context = {}
 
 	return context
+
+
+def dfp_add_preload_headers(response):
+	"""Allow externals links preloading"""
+	frappe_add_preload_headers(response)
+	response.headers["Link"] = response.headers["Link"].replace("/http", "http")
+
+from frappe.website.render import add_preload_headers as frappe_add_preload_headers
+frappe.website.render.add_preload_headers = dfp_add_preload_headers
