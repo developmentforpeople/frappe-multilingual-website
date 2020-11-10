@@ -16,6 +16,7 @@
 <pre><code>bench --site [site-name] clear-cache
 </code></pre>
 
+{% if languages_data %}
 {% for lang, data in languages_data.translated.items() %}
 <h2 class="mt-5">Language: {{ lang }}</h2>
 
@@ -23,5 +24,6 @@
 
 <pre><code>{{ languages_data.segments_as_txt[lang] }}</code></pre>
 {% endfor %}
+{% endif %}
 
 {% endblock %}
